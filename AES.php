@@ -20,8 +20,8 @@ class AES
     /**
      * AES constructor.
      *
-     * @param string $key
-     * @param string $cipher
+     * @param string      $key
+     * @param string      $cipher
      * @param null|string $iv
      */
     public function __construct($key, $cipher = 'AES-256-CBC', $iv = null)
@@ -35,22 +35,23 @@ class AES
      * Encrypt the given data.
      *
      * @param string $data
-     * @return string
      *
+     * @return string
      */
     public function encrypt($data)
     {
         if ($this->iv) {
-        	$iv = $this->iv;
+            $iv = $this->iv;
         } else {
-        	$iv = base64_encode(random_bytes(openssl_cipher_iv_length($this->cipher)));
+            $iv = base64_encode(random_bytes(openssl_cipher_iv_length($this->cipher)));
         }
 
         $encrypted = openssl_encrypt($data, $this->cipher, base64_decode($this->key), 0, base64_decode($iv));
 
         if ($this->iv == null) {
-            return $encrypted . ':' . $iv;
+            return $encrypted.':'.$iv;
         }
+
         return $encrypted;
     }
 
@@ -58,7 +59,8 @@ class AES
      * Decrypt the given data.
      *
      * @param string $data
-     * @param bool $randomIv
+     * @param bool   $randomIv
+     *
      * @return string
      */
     public function decrypt($data, $randomIv = false)
@@ -73,6 +75,7 @@ class AES
             $iv = base64_decode($this->iv);
         }
         $decrypted = openssl_decrypt($encrypted, $this->cipher, base64_decode($this->key), 0, $iv);
+
         return $decrypted;
     }
 }
